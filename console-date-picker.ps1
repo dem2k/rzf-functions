@@ -3,13 +3,14 @@ function Get-ConsoleDatePicker {
         $Text = "Datum"
     )
 
+    $mmChanged = $false
     $initDate = $(Get-Date).AddDays(-1)
     if ($initDate.DayOfWeek -eq "Sunday") {
         $initDate = $(Get-Date).AddDays(-3)
     }
-    $dd = "{0:d2}" -f $initDate.Day
-    $mm = "{0:d2}" -f $initDate.Month
-    $yy = "{0:d4}" -f $initDate.Year
+    [int]$dd = "{0:d2}" -f $initDate.Day
+    [int]$mm = "{0:d2}" -f $initDate.Month
+    [int]$yy = "{0:d4}" -f $initDate.Year
 
     $ed = ""
     while ($ed.Length -lt 6) {
@@ -38,6 +39,14 @@ function Get-ConsoleDatePicker {
         }
         if ($ed.length -gt 5) {
             $yy = "{0:d2}" -f $ed.substring(4, 2)
+        }
+        if (-not $mmChanged -and $ed.length -eq 2 -and $dd -gt $initDate.Day) {
+            $mm = $mm - 1
+            if ($mm -eq 0) {
+                $mm = 12
+                $jj = $jj - 1
+            }
+            $mmChanged = $true
         }
     }
     Write-Host ("{1} : {0:dd.MM.yyyy}                        " -f $ResultDate, $Text)
