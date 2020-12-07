@@ -1,0 +1,22 @@
+name: "tagged-release"
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  gh_tagged_release:
+    runs-on: "ubuntu-latest"
+
+    steps:
+      - name: "Checkout source code"
+        uses: "actions/checkout@v1"
+
+      - run: "zip rzf-functions.zip *.ps1 *.psd1 *.psm1"
+
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          prerelease: false
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          files: "rzf-functions.zip"
