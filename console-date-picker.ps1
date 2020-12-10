@@ -12,41 +12,44 @@ function Get-ConsoleDatePicker {
     [int]$mm = "{0:d2}" -f $initDate.Month
     [int]$yy = "{0:d4}" -f $initDate.Year
 
-    $ed = ""
-    while ($ed.Length -lt 6) {
+    $buf = ""
+    while ($buf.Length -lt 6) {
         $ResultDate = Get-Date ("{0}.{1}.{2}" -f $dd, $mm, $yy)
-        Write-Host ("`r{2} ? {0:dd.MM.yyyy} > {1}" -f $ResultDate, $ed, $Text) -NoNewline
+        Write-Host ("`r{2} ? {0:dd.MM.yyyy} > {1}" -f $ResultDate, $buf, $Text) -NoNewline
         $console = [System.Console]::ReadKey()
         if ($console.Key -eq [System.ConsoleKey]::Enter) { break }
-        if ($ed.Length -gt 0 -and $console.Key -eq [System.ConsoleKey]::Delete -or $console.Key -eq [System.ConsoleKey]::Backspace ) { $ed = $ed.Substring(0, $ed.Length - 1) }
+        if ($buf.Length -gt 0 -and $console.Key -eq [System.ConsoleKey]::Delete -or $console.Key -eq [System.ConsoleKey]::Backspace ) { $buf = $buf.Substring(0, $buf.Length - 1) }
 
         if ($console.keychar -lt '0' -or $console.keychar -gt '9') { continue }
-        $ed += $console.KeyChar
-        if ($ed.length -gt 0) {
-            $dd = "{0:d2}" -f $ed.substring(0, 1)
+        $buf += $console.KeyChar
+        if ($buf.length -gt 0) {
+            $dd = "{0:d2}" -f $buf.substring(0, 1)
         }
-        if ($ed.length -gt 1) {
-            $dd = "{0:d2}" -f $ed.substring(0, 2)
+        if ($buf.length -gt 1) {
+            $dd = "{0:d2}" -f $buf.substring(0, 2)
         }
-        if ($ed.length -gt 2) {
-            $mm = "{0:d2}" -f $ed.substring(2, 1)
+        if ($buf.length -gt 2) {
+            $mm = "{0:d2}" -f $buf.substring(2, 1)
         }
-        if ($ed.length -gt 3) {
-            $mm = "{0:d2}" -f $ed.substring(2, 2)
+        if ($buf.length -gt 3) {
+            $mm = "{0:d2}" -f $buf.substring(2, 2)
         }
-        if ($ed.length -gt 4) {
-            $yy = "{0:d2}" -f $ed.substring(4, 1)
+        if ($buf.length -gt 4) {
+            $yy = "{0:d2}" -f $buf.substring(4, 1)
         }
-        if ($ed.length -gt 5) {
-            $yy = "{0:d2}" -f $ed.substring(4, 2)
+        if ($buf.length -gt 5) {
+            $yy = "{0:d2}" -f $buf.substring(4, 2)
         }
-        if (-not $mmChanged -and $ed.length -eq 2 -and $dd -gt $initDate.Day) {
+        if (-not $mmChanged -and $buf.length -eq 2 -and $dd -gt $initDate.Day) {
             $mm = $mm - 1
             if ($mm -eq 0) {
                 $mm = 12
                 $jj = $jj - 1
             }
             $mmChanged = $true
+        }
+        if ($buf.length -eq 1 -and $dd -gt 3) {
+            $buf = "{0:d2}" -f $dd
         }
     }
     Write-Host ("{1} : {0:dd.MM.yyyy}                        " -f $ResultDate, $Text)
