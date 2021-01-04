@@ -44,7 +44,7 @@ function Get-ConsoleDatePicker {
             $mm = $mm - 1
             if ($mm -eq 0) {
                 $mm = 12
-                $jj = $jj - 1
+                $yy = $yy - 1
             }
             $mmChanged = $true
         }
