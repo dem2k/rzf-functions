@@ -13,7 +13,7 @@ function Get-ConsoleDatePicker {
     [int]$yy = "{0:d4}" -f $initDate.Year
 
     $buf = ""
-    while ($buf.Length -lt 6) {
+    while ($buf.Length -le 6) {
         $ResultDate = Get-Date ("{0}.{1}.{2}" -f $dd, $mm, $yy)
         Write-Host ("`r{2} ? {0:dd.MM.yyyy} > {1}" -f $ResultDate, $buf, $Text) -NoNewline
         $console = [System.Console]::ReadKey()
@@ -35,10 +35,10 @@ function Get-ConsoleDatePicker {
             $mm = "{0:d2}" -f $buf.substring(2, 2)
         }
         if ($buf.length -gt 4) {
-            $yy = "{0:d2}" -f $buf.substring(4, 1)
+            $yy = "200{0:d2}" -f $buf.substring(4, 1)
         }
         if ($buf.length -gt 5) {
-            $yy = "{0:d2}" -f $buf.substring(4, 2)
+            $yy = "20{0:d2}" -f $buf.substring(4, 2)
         }
         if (-not $mmChanged -and $buf.length -eq 2 -and $dd -gt $initDate.Day) {
             $mm = $mm - 1
