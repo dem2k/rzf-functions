@@ -15,7 +15,7 @@ function Get-ConsoleDatePicker {
     $buf = ""
     while ($buf.Length -le 6) {
         $ResultDate = Get-Date ("{0}.{1}.{2}" -f $dd, $mm, $yy)
-        Write-Host ("`r{2} ? {0:dd.MM.yyyy} > {1}" -f $ResultDate, $buf, $Text) -NoNewline
+        Write-Host ("`r{2} ? {0:dd.MM.yyyy} > {1}    " -f $ResultDate, $buf, $Text) -NoNewline
         $console = [System.Console]::ReadKey()
         if ($console.Key -eq [System.ConsoleKey]::Enter) { break }
         if ($buf.Length -gt 0 -and $console.Key -eq [System.ConsoleKey]::Delete -or $console.Key -eq [System.ConsoleKey]::Backspace ) { $buf = $buf.Substring(0, $buf.Length - 1) }
