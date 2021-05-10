@@ -70,7 +70,7 @@ PowerShellVersion = '7.0.0'
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
 FunctionsToExport = @('Get-ConsoleDatePicker','Get-StnrFromRequest','Set-NextGinsterXmlFile', 'Convert-GinsterResponseToRequest',
-                      'Get-GinsterXmlNamespace', 'Get-GinsterXmlVersion' )
+                      'Get-GinsterXmlNamespace', 'Get-GinsterXmlVersion', 'Get-GinsterXmlStnr' )
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = @()
