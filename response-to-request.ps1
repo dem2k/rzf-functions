@@ -1,26 +1,42 @@
+function _Get-GinsterXmlNamespace {
+    param ( [parameter(Mandatory = $true)] $GinsterXml )
+
+    $ns = $GinsterXml | sls "<GINSTER.*xmlns="
+    if (-not($ns -match 'xmlns="(.*?)"')) {
+        throw "namespace not found"
+    }
+    return $matches[1] 
+}
+
+function _Get-GinsterXmlVersion {
+    param ( [parameter(Mandatory = $true)] $GinsterXml )
+
+    $ver = $GinsterXml | sls "<GINSTER.*version="
+    if (-not($ver -match 'version="(.*?)"')) {
+        throw "version not found"
+    }
+    return $matches[1] 
+}
+
 function Convert-GinsterResponseToRequest {
-    param ($InputFile, $OutFile, [switch]$ClipBoard)
+    param ($InputXml)
     # ----------------------------------------------
+    $XmlContent = $InputXml -join ""
+    $version    = _Get-GinsterXmlVersion   $XmlContent
+    $xmlns      = _Get-GinsterXmlNamespace $XmlContent
+    $timeNow    = "{0:yyyyMMddHHmmss}" -f $(Get-Date)
+    
     $SelectXmlParams = @{
         XPath     = '/ns:GINSTER/ns:Response/ns:GetErgebnisListe/ns:Ergebnis/ns:Steuerkonto'
-        Namespace = @{ns = "http://ginster.hzd.hessen.de/2006/XMLSchema" }
-    }
-
-    if ($InputFile) {
-        $SelectXmlParams['Path'] = $InputFile
-    }
-    
-    if ($ClipBoard) {
-        $SelectXmlParams['Content'] = Get-Clipboard -Raw
+        Namespace = @{ns = $xmlns}
+        Content   = $XmlContent
     }
 
     $BvKonto = $(Select-Xml @SelectXmlParams).Node.OuterXml -replace '\s+xmlns="http://ginster.hzd.hessen.de/2006/XMLSchema"', '' 
-
-    $timeNow = "{0:yyyyMMddHHmmss}" -f $(Get-Date)
     
-    $result = @"
+    $result  = @"
 <?xml version="1.0" encoding="ISO-8859-15"?>
-<GINSTER xmlns="http://ginster.hzd.hessen.de/2006/XMLSchema" land="nw" version="000016">
+<GINSTER xmlns="$xmlns" land="nw" version="$version">
     <Request benutzerId="batch" lieferant="export" lfdLieferung="001">
         <UpdateList>
             <Update>
@@ -32,14 +48,7 @@ function Convert-GinsterResponseToRequest {
 </GINSTER>
 "@
 
-    if (-not $OutFile) {
-        $result
-    }
-    else {
-        [System.IO.File]::WriteAllText($OutFile, $result,
-            [System.Text.Encoding]::GetEncoding("iso-8859-1"))
-    }
-
+    return $result
 }
 
-#Convert-GinsterResponseToRequest -ClipBoard
+#Convert-GinsterResponseToRequest $(Get-Clipboard)
