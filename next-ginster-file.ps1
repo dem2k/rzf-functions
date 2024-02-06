@@ -4,7 +4,7 @@ function Set-NextGinsterXmlFile {
         $GinsterXml,
         [ValidateSet("Neu","Aend")]
         $Anweisung,
-        [ValidateSet("export","update","rueckmigration","ginsterdialog")]
+        [ValidateSet("export","update","rueckmigration","ginsterdialog","vmvdb","idnr","pingobgkl")]
         $Lieferant
     )
     # -------------------------------------------------------------------------------
